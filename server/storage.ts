@@ -1,10 +1,11 @@
-import { type User, type InsertUser, type VmSession, type InsertVmSession, type UploadedFile, type InsertUploadedFile } from "@shared/schema";
+import { type User, type UpsertUser, type VmSession, type InsertVmSession, type UploadedFile, type InsertUploadedFile } from "@shared/schema";
 import { randomUUID } from "crypto";
 
 export interface IStorage {
+  // User operations
+  // (IMPORTANT) these user operations are mandatory for Replit Auth.
   getUser(id: string): Promise<User | undefined>;
-  getUserByUsername(username: string): Promise<User | undefined>;
-  createUser(user: InsertUser): Promise<User>;
+  upsertUser(user: UpsertUser): Promise<User>;
   
   getVmSession(id: string): Promise<VmSession | undefined>;
   getAllVmSessions(): Promise<VmSession[]>;
@@ -33,15 +34,14 @@ export class MemStorage implements IStorage {
     return this.users.get(id);
   }
 
-  async getUserByUsername(username: string): Promise<User | undefined> {
-    return Array.from(this.users.values()).find(
-      (user) => user.username === username,
-    );
-  }
-
-  async createUser(insertUser: InsertUser): Promise<User> {
-    const id = randomUUID();
-    const user: User = { ...insertUser, id };
+  async upsertUser(userData: UpsertUser): Promise<User> {
+    const id = userData.id || randomUUID();
+    const user: User = {
+      ...userData,
+      id,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    };
     this.users.set(id, user);
     return user;
   }
@@ -60,6 +60,9 @@ export class MemStorage implements IStorage {
       ...insertSession,
       id,
       status: "stopped",
+      memory: insertSession.memory ?? 512,
+      cpuCores: insertSession.cpuCores ?? 1,
+      isoFileName: insertSession.isoFileName ?? null,
       createdAt: new Date(),
       lastStarted: null,
     };
