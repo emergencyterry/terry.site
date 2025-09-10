@@ -1,10 +1,33 @@
 import express, { type Request, Response, NextFunction } from "express";
+import session from "express-session";
 import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
+import { pool } from "./db";
+
+// Import connect-pg-simple to use PostgreSQL for session storage
+const pgSession = require('connect-pg-simple')(session);
 
 const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
+
+// Session configuration
+app.use(session({
+  store: new pgSession({
+    pool: pool,
+    tableName: 'sessions',
+    createTableIfMissing: false, // We already have the sessions table
+  }),
+  secret: process.env.SESSION_SECRET || 'terry-davis-memorial-forum-secret-key-2024',
+  resave: false,
+  saveUninitialized: false,
+  cookie: {
+    secure: process.env.NODE_ENV === 'production',
+    httpOnly: true,
+    maxAge: 24 * 60 * 60 * 1000, // 24 hours
+    sameSite: 'lax', // CSRF protection
+  },
+}));
 
 app.use((req, res, next) => {
   const start = Date.now();
