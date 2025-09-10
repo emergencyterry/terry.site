@@ -1,8 +1,8 @@
 import { Button } from "@/components/ui/button";
 
 interface NavigationProps {
-  activeSection: 'biography' | 'vm' | 'legacy';
-  onSectionChange: (section: 'biography' | 'vm' | 'legacy') => void;
+  activeSection: 'biography' | 'vm' | 'legacy' | 'emulator';
+  onSectionChange: (section: 'biography' | 'vm' | 'legacy' | 'emulator') => void;
 }
 
 export default function Navigation({ activeSection, onSectionChange }: NavigationProps) {
@@ -46,6 +46,18 @@ export default function Navigation({ activeSection, onSectionChange }: Navigatio
             data-testid="button-legacy"
           >
             [L]EGACY
+          </Button>
+          <Button
+            onClick={() => onSectionChange('emulator')}
+            variant="outline"
+            className={`px-3 py-1 text-xs border ${
+              activeSection === 'emulator'
+                ? 'terminal-green border-terminal-green'
+                : 'terminal-cyan border-terminal-cyan hover:terminal-green hover:border-terminal-green'
+            } bg-transparent`}
+            data-testid="button-emulator"
+          >
+            [E]MULATOR
           </Button>
         </div>
       </div>

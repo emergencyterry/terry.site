@@ -5,8 +5,10 @@ import BiographySection from "@/components/biography-section";
 import VmSection from "@/components/vm-section";
 import LegacySection from "@/components/legacy-section";
 
+import EmulatorSection from "@/components/emulator-section";
+
 export default function Home() {
-  const [activeSection, setActiveSection] = useState<'biography' | 'vm' | 'legacy'>('biography');
+  const [activeSection, setActiveSection] = useState<'biography' | 'vm' | 'legacy' | 'emulator'>('biography');
 
   return (
     <div className="min-h-screen bg-background text-foreground font-mono">
@@ -17,6 +19,7 @@ export default function Home() {
         {activeSection === 'biography' && <BiographySection />}
         {activeSection === 'vm' && <VmSection />}
         {activeSection === 'legacy' && <LegacySection />}
+        {activeSection === 'emulator' && <EmulatorSection />}
       </div>
 
       {/* Footer */}
