@@ -28,7 +28,7 @@ function useHashLocation() {
     window.location.hash = path;
   }, []);
 
-  return [location, navigate];
+  return [location, navigate] as [string, (path: string) => void];
 }
 
 function AppRouter() {

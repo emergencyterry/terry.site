@@ -26,7 +26,7 @@ export default function Home() {
       <div className="max-w-6xl mx-auto px-4 mt-8 pb-8">
         <div className="terminal-border bg-background p-4 text-center text-xs">
           <div className="terminal-gray">
-            MEMORIAL SYSTEM V1.0 | IN MEMORY OF TERRY A. DAVIS | TEMPLEOS FOREVER<br />
+            TERRY.SITE | IN MEMORY OF TERRY A. DAVIS | TEMPLEOS FOREVER<br />
             PUBLIC DOMAIN | COMMUNITY MAINTAINED | GOD'S LONELY PROGRAMMER LIVES ON
           </div>
         </div>

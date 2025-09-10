@@ -59,6 +59,23 @@ export default function Navigation({ activeSection, onSectionChange }: Navigatio
           >
             [E]MULATOR
           </Button>
+          <Button
+            onClick={() => {
+              // Check if we're on GitHub Pages or local development
+              if (window.location.hostname.includes('github.io') || window.location.hostname.includes('github.com')) {
+                // On GitHub Pages, use hash routing
+                window.location.hash = '/forum';
+              } else {
+                // Local development, navigate to forum
+                window.location.href = '/forum';
+              }
+            }}
+            variant="outline"
+            className="px-3 py-1 text-xs border terminal-cyan border-terminal-cyan hover:terminal-green hover:border-terminal-green bg-transparent"
+            data-testid="button-forum"
+          >
+            [F]ORUM
+          </Button>
         </div>
       </div>
     </div>
