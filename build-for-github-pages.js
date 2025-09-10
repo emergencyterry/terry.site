@@ -16,12 +16,25 @@ try {
   console.log('📦 Building React application...');
   execSync('vite build', { stdio: 'inherit' });
 
-  // Don't copy the static index.html - let Vite's built index.html remain
-  console.log('📄 Using Vite-built index.html (preserving React app entry point)...');
+  // Move the built files from dist/public to dist root for GitHub Pages
+  console.log('📁 Reorganizing files for GitHub Pages...');
+  execSync('cp -r dist/public/* dist/', { stdio: 'inherit' });
+  execSync('rm -rf dist/public', { stdio: 'inherit' });
 
   // Copy the 404.html for GitHub Pages routing
   console.log('🔄 Copying 404.html for GitHub Pages routing...');
   copyFileSync('404.html', 'dist/404.html');
+
+  // Fix absolute paths in index.html for GitHub Pages
+  console.log('🔧 Fixing asset paths for GitHub Pages...');
+  const { readFileSync, writeFileSync } = await import('fs');
+  let indexContent = readFileSync('dist/index.html', 'utf-8');
+  
+  // Convert absolute paths to relative paths
+  indexContent = indexContent.replace(/src="\/assets\//g, 'src="./assets/');
+  indexContent = indexContent.replace(/href="\/assets\//g, 'href="./assets/');
+  
+  writeFileSync('dist/index.html', indexContent);
 
   console.log('✅ Build complete!');
   console.log('');

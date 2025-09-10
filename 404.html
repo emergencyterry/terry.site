@@ -6,28 +6,33 @@
     <title>terry.site - Redirecting...</title>
     <script>
         // GitHub Pages 404 redirect for client-side routing
-        // This script takes the current URL and redirects to the index page with the path as a hash
-        var pathSegmentsToKeep = 0;
+        // Simple redirect that preserves the path as a hash
         var location = window.location;
+        var path = location.pathname;
         
-        // Get the current path and convert it to a hash-based path
-        var currentPath = location.pathname.slice(1);
+        // For GitHub Pages deployed from a repo (not github.io), we need to account for the repo name
+        var segments = path.replace(/^\//, '').split('/');
+        var repoName = segments[0] || '';
+        var routePath = segments.slice(1).join('/') || segments[0];
         
-        if (currentPath) {
-            // Redirect to index.html with hash-based routing
-            location.replace(
-                location.protocol + '//' + location.hostname + 
-                (location.port ? ':' + location.port : '') +
-                location.pathname.split('/').slice(0, 1 + pathSegmentsToKeep).join('/') + 
-                '/#/' + currentPath +
-                (location.search || '')
-            );
+        if (routePath === 'forum') {
+            // Redirect /forum to /#/forum
+            var newUrl = location.protocol + '//' + location.hostname + 
+                (location.port ? ':' + location.port : '') + 
+                (repoName ? '/' + repoName : '') + '/#/forum';
+            location.replace(newUrl);
+        } else if (routePath) {
+            // Redirect any other path to hash routing
+            var newUrl = location.protocol + '//' + location.hostname + 
+                (location.port ? ':' + location.port : '') + 
+                (repoName ? '/' + repoName : '') + '/#/' + routePath;
+            location.replace(newUrl);
         } else {
             // Just go to the main page
-            location.replace(
-                location.protocol + '//' + location.hostname + 
-                (location.port ? ':' + location.port : '') + '/'
-            );
+            var newUrl = location.protocol + '//' + location.hostname + 
+                (location.port ? ':' + location.port : '') + 
+                (repoName ? '/' + repoName : '') + '/';
+            location.replace(newUrl);
         }
     </script>
 </head>
