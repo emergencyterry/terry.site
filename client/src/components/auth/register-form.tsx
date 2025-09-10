@@ -56,7 +56,7 @@ export default function RegisterForm({ onSuccess, onSwitchToLogin }: RegisterFor
       await register(registerData);
       toast({
         title: 'Registration successful',
-        description: 'Welcome to the Terry A. Davis Memorial Forum',
+        description: 'Welcome to the Terry A. Davis Forum',
       });
       onSuccess?.();
     } catch (error: any) {

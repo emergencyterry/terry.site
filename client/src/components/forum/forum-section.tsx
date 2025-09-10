@@ -60,7 +60,7 @@ export default function ForumSection() {
       {/* Forum Header */}
       <div className="terminal-border bg-background p-6">
         <div className="flex items-center justify-between mb-4">
-          <div className="terminal-green text-lg">TERRY A. DAVIS MEMORIAL FORUM</div>
+          <div className="terminal-green text-lg">TERRY A. DAVIS FORUM</div>
           
           <div className="flex items-center space-x-2">
             {isAuthenticated ? (

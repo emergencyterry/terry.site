@@ -39,7 +39,7 @@ export default function LoginForm({ onSuccess, onSwitchToRegister }: LoginFormPr
       await login(data);
       toast({
         title: 'Login successful',
-        description: 'Welcome back to the Terry A. Davis Memorial Forum',
+        description: 'Welcome back to the Terry A. Davis Forum',
       });
       onSuccess?.();
     } catch (error: any) {

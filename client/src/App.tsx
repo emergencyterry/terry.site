@@ -5,7 +5,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { AuthProvider } from "@/lib/auth";
 import Home from "@/pages/home";
-import ForumPage from "@/pages/forum";
+import ForumPage from "@/pages/forum.tsx";
 import NotFound from "@/pages/not-found";
 
 function Router() {

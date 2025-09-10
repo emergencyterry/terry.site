@@ -24,7 +24,7 @@ export default function ForumPage() {
                 data-testid="button-home"
               >
                 <Home className="w-4 h-4 mr-2" />
-                MEMORIAL HOME
+                HOME
               </Button>
               <div className="terminal-green text-lg">COMMUNITY FORUM</div>
             </div>
@@ -42,8 +42,8 @@ export default function ForumPage() {
       <div className="max-w-6xl mx-auto px-4 mt-8 pb-8">
         <div className="terminal-border bg-background p-4 text-center text-xs">
           <div className="terminal-gray">
-            TERRY A. DAVIS MEMORIAL FORUM | COMMUNITY DRIVEN | GOD'S LONELY PROGRAMMER LIVES ON<br />
-            <a href="/" className="terminal-cyan hover:terminal-green underline">Return to Memorial Home</a> | 
+            TERRY A. DAVIS FORUM | COMMUNITY DRIVEN | GOD'S LONELY PROGRAMMER LIVES ON<br />
+            <a href="/" className="terminal-cyan hover:terminal-green underline">Return to Home</a> | 
             Share Knowledge | Honor His Legacy
           </div>
         </div>
