@@ -20,6 +20,10 @@ try {
   console.log('📁 Reorganizing files for GitHub Pages...');
   execSync('cp -r dist/public/* dist/', { stdio: 'inherit' });
   execSync('rm -rf dist/public', { stdio: 'inherit' });
+  
+  // Replace the root index.html with the React app's index.html
+  console.log('🔄 Replacing root index.html with React app...');
+  copyFileSync('dist/index.html', 'index.html');
 
   // Copy the 404.html for GitHub Pages routing
   console.log('🔄 Copying 404.html for GitHub Pages routing...');
