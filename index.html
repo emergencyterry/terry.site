@@ -1,0 +1,788 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Terry A. Davis Memorial System - TempleOS Creator</title>
+    <meta name="description" content="Memorial website dedicated to Terry A. Davis, creator of TempleOS and the HolyC programming language. Explore his biography, virtual machine emulator, and lasting legacy.">
+    <meta property="og:title" content="Terry A. Davis Memorial System">
+    <meta property="og:description" content="Tribute to God's Lonely Programmer - creator of TempleOS operating system">
+    <meta property="og:type" content="website">
+    <link href="https://fonts.googleapis.com/css2?family=Courier+Prime:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --terminal-green: hsl(120, 100%, 50%);
+            --terminal-amber: hsl(45, 100%, 50%);
+            --terminal-blue: hsl(240, 100%, 50%);
+            --terminal-cyan: hsl(180, 100%, 50%);
+            --terminal-magenta: hsl(300, 100%, 50%);
+            --terminal-gray: hsl(0, 0%, 75%);
+            --terminal-red: hsl(0, 100%, 50%);
+            --terminal-white: hsl(0, 0%, 100%);
+            --terminal-black: hsl(0, 0%, 0%);
+            --background: hsl(0, 0%, 0%);
+            --foreground: hsl(0, 0%, 100%);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: "Courier Prime", "Courier New", Monaco, Consolas, monospace;
+            background-color: var(--background);
+            color: var(--foreground);
+            line-height: 1.6;
+            background: linear-gradient(transparent 50%, rgba(0, 255, 0, 0.03) 50%);
+            background-size: 100% 4px;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 16px;
+        }
+        
+        .terminal-border {
+            border: 2px solid var(--terminal-green);
+            box-shadow: 0 0 10px var(--terminal-green);
+            background-color: var(--background);
+        }
+        
+        .terminal-green { color: var(--terminal-green); }
+        .terminal-amber { color: var(--terminal-amber); }
+        .terminal-blue { color: var(--terminal-blue); }
+        .terminal-cyan { color: var(--terminal-cyan); }
+        .terminal-magenta { color: var(--terminal-magenta); }
+        .terminal-gray { color: var(--terminal-gray); }
+        .terminal-red { color: var(--terminal-red); }
+        .terminal-white { color: var(--terminal-white); }
+        
+        .bg-terminal-green { background-color: var(--terminal-green); }
+        .bg-terminal-amber { background-color: var(--terminal-amber); }
+        .bg-terminal-blue { background-color: var(--terminal-blue); }
+        .bg-terminal-cyan { background-color: var(--terminal-cyan); }
+        .bg-terminal-magenta { background-color: var(--terminal-magenta); }
+        
+        .ascii-header {
+            text-align: center;
+            padding: 16px;
+        }
+        
+        .ascii-art {
+            font-size: 8px;
+            line-height: 1;
+            white-space: pre;
+        }
+        
+        .navigation {
+            margin-bottom: 24px;
+        }
+        
+        .nav-container {
+            padding: 16px;
+        }
+        
+        .nav-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+            font-size: 14px;
+            margin-top: 8px;
+        }
+        
+        .nav-button {
+            padding: 4px 12px;
+            font-size: 12px;
+            border: 1px solid var(--terminal-cyan);
+            background: transparent;
+            color: var(--terminal-cyan);
+            font-family: inherit;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .nav-button:hover {
+            color: var(--terminal-green);
+            border-color: var(--terminal-green);
+        }
+        
+        .nav-button.active {
+            color: var(--terminal-green);
+            border-color: var(--terminal-green);
+        }
+        
+        .section {
+            display: none;
+        }
+        
+        .section.active {
+            display: block;
+        }
+        
+        .section-content {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+        
+        .content-box {
+            padding: 24px;
+        }
+        
+        .content-title {
+            font-size: 18px;
+            margin-bottom: 16px;
+        }
+        
+        .grid-2 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 24px;
+        }
+        
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 16px;
+        }
+        
+        .info-box {
+            border: 1px solid var(--terminal-blue);
+            padding: 16px;
+        }
+        
+        .info-title {
+            margin-bottom: 8px;
+        }
+        
+        .info-content {
+            font-size: 12px;
+            line-height: 1.4;
+        }
+        
+        .quote-box {
+            border-left: 2px solid var(--terminal-amber);
+            padding-left: 16px;
+            margin: 12px 0;
+        }
+        
+        .stats-grid {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 8px;
+            font-size: 14px;
+        }
+        
+        .vm-grid {
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: 24px;
+        }
+        
+        .vm-controls {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+        
+        .control-section {
+            padding: 16px;
+        }
+        
+        .control-button {
+            width: 100%;
+            padding: 8px 16px;
+            margin: 4px 0;
+            border: 1px solid var(--terminal-green);
+            background: var(--terminal-green);
+            color: var(--background);
+            font-family: inherit;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        
+        .control-button:hover {
+            background: var(--terminal-cyan);
+            border-color: var(--terminal-cyan);
+        }
+        
+        .vm-display {
+            padding: 16px;
+        }
+        
+        .vm-screen {
+            background: black;
+            border: 2px solid var(--terminal-blue);
+            aspect-ratio: 4/3;
+            padding: 16px;
+            font-family: monospace;
+            font-size: 12px;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .vm-stats {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            margin-top: 16px;
+            text-align: center;
+            font-size: 12px;
+        }
+        
+        .memorial-tribute {
+            text-align: center;
+            padding: 24px;
+        }
+        
+        .tribute-name {
+            font-size: 18px;
+            margin: 8px 0;
+        }
+        
+        .tribute-dates {
+            margin: 8px 0;
+        }
+        
+        .tribute-quote {
+            font-size: 14px;
+            margin: 16px 0;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .tribute-footer {
+            font-size: 12px;
+            margin-top: 16px;
+        }
+        
+        .footer {
+            margin-top: 32px;
+            padding-bottom: 32px;
+        }
+        
+        .footer-content {
+            padding: 16px;
+            text-align: center;
+            font-size: 12px;
+        }
+        
+        .animate-blink {
+            animation: blink 1s infinite;
+        }
+        
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0; }
+        }
+        
+        @media (max-width: 768px) {
+            .vm-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .grid-2, .grid-3 {
+                grid-template-columns: 1fr;
+            }
+            
+            .ascii-art {
+                font-size: 6px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- ASCII Header -->
+    <div class="ascii-header">
+        <div class="terminal-green ascii-art">████████╗███████╗██████╗ ██████╗ ██╗   ██╗     █████╗     ██████╗  █████╗ ██╗   ██╗██╗███████╗
+╚══██╔══╝██╔════╝██╔══██╗██╔══██╗╚██╗ ██╔╝    ██╔══██╗    ██╔══██╗██╔══██╗██║   ██║██║██╔════╝
+   ██║   █████╗  ██████╔╝██████╔╝ ╚████╔╝     ███████║    ██║  ██║███████║██║   ██║██║███████╗
+   ██║   ██╔══╝  ██╔══██╗██╔══██╗  ╚██╔╝      ██╔══██║    ██║  ██║██╔══██║╚██╗ ██╔╝██║╚════██║
+   ██║   ███████╗██║  ██║██║  ██║   ██║       ██║  ██║    ██████╔╝██║  ██║ ╚████╔╝ ██║███████║
+   ╚═╝   ╚══════╝╚═╝  ╚═╝╚═╝  ╚═╝   ╚═╝       ╚═╝  ╚═╝    ╚═════╝ ╚═╝  ╚═╝  ╚═══╝  ╚═╝╚══════╝</div>
+        <div class="terminal-amber" style="font-size: 14px; margin-top: 8px;">
+            MEMORIAL SYSTEM v1.0 - DEDICATED TO GOD'S LONELY PROGRAMMER
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- Navigation -->
+        <div class="navigation">
+            <div class="terminal-border nav-container">
+                <div class="terminal-green" style="margin-bottom: 8px;">C:\TERRY_DAVIS> NAVIGATE</div>
+                <div class="nav-buttons">
+                    <button class="nav-button active" onclick="showSection('biography')" data-section="biography" data-testid="button-biography">
+                        [B]IOGRAPHY
+                    </button>
+                    <button class="nav-button" onclick="showSection('vm')" data-section="vm" data-testid="button-vm">
+                        [V]IRTUAL MACHINE
+                    </button>
+                    <button class="nav-button" onclick="showSection('legacy')" data-section="legacy" data-testid="button-legacy">
+                        [L]EGACY
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Biography Section -->
+        <div id="biography" class="section active">
+            <div class="section-content">
+                <!-- Personal Information -->
+                <div class="terminal-border content-box">
+                    <div class="terminal-green content-title">BIOGRAPHICAL DATA</div>
+                    <div class="grid-2">
+                        <div>
+                            <div class="terminal-amber info-title">PERSONAL INFORMATION:</div>
+                            <div class="info-content">
+                                <div>NAME: Terrence Andrew Davis</div>
+                                <div>BORN: December 15, 1969 - West Allis, Wisconsin</div>
+                                <div>DIED: August 11, 2018 (Age 48)</div>
+                                <div>EDUCATION: Arizona State University (B.S., M.S. Electrical Engineering)</div>
+                                <div>GPA: 3.63 | SAT: 1440</div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="terminal-amber info-title">CAREER TIMELINE:</div>
+                            <div class="info-content">
+                                <div>1990-1996: Ticketmaster (VAX Programmer)</div>
+                                <div>1993-2017: TempleOS Development</div>
+                                <div>1996: Mental Health Crisis</div>
+                                <div>2004-2018: OS Evolution (J OS → LoseThos → SparrowOS → TempleOS)</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Technical Achievements -->
+                <div class="terminal-border content-box">
+                    <div class="terminal-green content-title">TECHNICAL ACHIEVEMENTS</div>
+                    <div class="grid-3">
+                        <div class="info-box">
+                            <div class="terminal-cyan info-title">HOLLYC LANGUAGE</div>
+                            <div class="info-content">
+                                • Created original programming language<br>
+                                • Middle ground between C and C++<br>
+                                • Originally called "C+" (C Plus)<br>
+                                • Renamed to "Holy C"
+                            </div>
+                        </div>
+                        <div class="info-box">
+                            <div class="terminal-cyan info-title">TEMPLEOS SPECS</div>
+                            <div class="info-content">
+                                • 64-bit operating system<br>
+                                • 120,000+ lines of code<br>
+                                • 640x480 VGA, 16 colors<br>
+                                • Single address space<br>
+                                • Ring-0 only, non-networked
+                            </div>
+                        </div>
+                        <div class="info-box">
+                            <div class="terminal-cyan info-title">COMPLETE SYSTEM</div>
+                            <div class="info-content">
+                                • Custom kernel & compiler<br>
+                                • Built-in editor & debugger<br>
+                                • Flight simulator included<br>
+                                • 3D graphics library<br>
+                                • Sprite & mesh editors
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Industry Recognition -->
+                <div class="terminal-border content-box">
+                    <div class="terminal-green content-title">INDUSTRY RECOGNITION</div>
+                    <div class="section-content">
+                        <div class="quote-box">
+                            <div class="terminal-amber">"TempleOS is a testament to the dedication and passion of one man displaying his technological prowess."</div>
+                            <div class="terminal-gray">- James Sanders, TechRepublic</div>
+                        </div>
+                        <div class="quote-box">
+                            <div class="terminal-amber">"Davis was clearly a gifted programmer – writing an entire operating system is no small feat."</div>
+                            <div class="terminal-gray">- Thom Holwerda, OSNews</div>
+                        </div>
+                        <div class="quote-box">
+                            <div class="terminal-amber">"Compared the development of TempleOS to a one-man-built skyscraper."</div>
+                            <div class="terminal-gray">- Computer Engineer, Community Member</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Virtual Machine Section -->
+        <div id="vm" class="section">
+            <div class="vm-grid">
+                <!-- VM Controls -->
+                <div class="vm-controls">
+                    <div class="terminal-border control-section">
+                        <div class="terminal-green" style="margin-bottom: 16px;">VM CONTROLS</div>
+                        
+                        <!-- Status -->
+                        <div style="margin-bottom: 16px;">
+                            <div class="terminal-amber" style="font-size: 14px; margin-bottom: 8px;">STATUS:</div>
+                            <div class="terminal-green info-content">
+                                SYSTEM: <span class="animate-blink">READY</span><br>
+                                MEMORY: <span>512MB</span><br>
+                                CPU: <span>1 CORE</span>
+                            </div>
+                        </div>
+
+                        <!-- Control Buttons -->
+                        <button class="control-button" onclick="startVM()" data-testid="button-start-vm">► START VM</button>
+                        <button class="control-button" onclick="stopVM()" data-testid="button-stop-vm">■ STOP VM</button>
+                        <button class="control-button" onclick="resetVM()" data-testid="button-reset-vm">↻ RESET VM</button>
+                    </div>
+
+                    <!-- TempleOS Info -->
+                    <div class="terminal-border control-section">
+                        <div class="terminal-green" style="margin-bottom: 8px;">TEMPLEOS SPECS</div>
+                        <div class="info-content">
+                            <div>• 64-bit x86-64 Architecture</div>
+                            <div>• 16-Color VGA Graphics</div>
+                            <div>• HolyC Programming Language</div>
+                            <div>• Non-preemptive Multitasking</div>
+                            <div>• Ring-0 Only Execution</div>
+                            <div>• Public Domain License</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- VM Display -->
+                <div class="terminal-border vm-display">
+                    <div class="terminal-green" style="margin-bottom: 16px;">VIRTUAL MACHINE DISPLAY [640x480]</div>
+                    
+                    <!-- VM Screen -->
+                    <div class="vm-screen terminal-green" id="vm-screen" data-testid="vm-display">
+                        <div>TempleOS V5.03 Boot Loader</div>
+                        <div>=====================================</div>
+                        <div></div>
+                        <div>Detecting Hardware...</div>
+                        <div>CPU: x86-64 Compatible</div>
+                        <div>Memory: 512MB Available</div>
+                        <div>Graphics: VGA 640x480 16-Color</div>
+                        <div></div>
+                        <div>Loading Kernel...</div>
+                        <div class="terminal-amber">Loading HolyC Compiler...</div>
+                        <div class="terminal-cyan">Initializing God Mode...</div>
+                        <div></div>
+                        <div class="terminal-green">Ready for Divine Programming.</div>
+                        <div></div>
+                        <div class="terminal-amber">C:\Home> <span class="animate-blink">_</span></div>
+                    </div>
+
+                    <!-- VM Stats -->
+                    <div class="vm-stats">
+                        <div>
+                            <div class="terminal-amber">CPU</div>
+                            <div class="terminal-green">12%</div>
+                        </div>
+                        <div>
+                            <div class="terminal-amber">MEM</div>
+                            <div class="terminal-green">256MB</div>
+                        </div>
+                        <div>
+                            <div class="terminal-amber">FPS</div>
+                            <div class="terminal-green">60</div>
+                        </div>
+                        <div>
+                            <div class="terminal-amber">UPTIME</div>
+                            <div class="terminal-green" id="uptime">00:00:00</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Available ISOs -->
+            <div class="terminal-border content-box" style="margin-top: 24px;">
+                <div class="terminal-green content-title">AVAILABLE 64-BIT OPERATING SYSTEMS</div>
+                <div class="grid-3">
+                    <div class="info-box">
+                        <div class="terminal-cyan info-title">TEMPLEOS V5.03</div>
+                        <div class="info-content">
+                            <div>Size: 2.3MB</div>
+                            <div>Lang: HolyC</div>
+                            <div>Graphics: 16-Color VGA</div>
+                        </div>
+                        <button class="control-button" style="margin-top: 8px;" onclick="loadOS('TempleOS')" data-testid="button-load-templeos">LOAD</button>
+                    </div>
+                    <div class="info-box">
+                        <div class="terminal-cyan info-title">LINUX MINIMAL</div>
+                        <div class="info-content">
+                            <div>Size: 45MB</div>
+                            <div>Kernel: 5.15</div>
+                            <div>Shell: Bash</div>
+                        </div>
+                        <button class="control-button" style="margin-top: 8px;" onclick="loadOS('Linux')" data-testid="button-load-linux">LOAD</button>
+                    </div>
+                    <div class="info-box">
+                        <div class="terminal-cyan info-title">FREEDOS</div>
+                        <div class="info-content">
+                            <div>Size: 128MB</div>
+                            <div>Type: DOS Compatible</div>
+                            <div>Era: Retro Computing</div>
+                        </div>
+                        <button class="control-button" style="margin-top: 8px;" onclick="loadOS('FreeDOS')" data-testid="button-load-freedos">LOAD</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Legacy Section -->
+        <div id="legacy" class="section">
+            <div class="section-content">
+                <!-- Programming Philosophy -->
+                <div class="terminal-border content-box">
+                    <div class="terminal-green content-title">PROGRAMMING PHILOSOPHY</div>
+                    <div class="section-content">
+                        <div class="quote-box">
+                            <div class="terminal-amber info-title">DIVINE INSPIRATION:</div>
+                            <div>"Davis proclaimed that he was in direct communication with God, who told him to build a successor to the Second Temple as an operating system."</div>
+                        </div>
+                        <div class="quote-box">
+                            <div class="terminal-amber info-title">TECHNICAL MASTERY:</div>
+                            <div>"Starting from nothing, he created his own programming language, a variant of C. As far as I know, no one else has ever created an entire operating system, in complete isolation, before."</div>
+                        </div>
+                        <div class="quote-box">
+                            <div class="terminal-amber info-title">SELF-PROCLAIMED GENIUS:</div>
+                            <div>"He would refer to himself as 'the smartest programmer that's ever lived' while showing his creations."</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid-2">
+                    <!-- Community Projects -->
+                    <div class="terminal-border content-box">
+                        <div class="terminal-green content-title">COMMUNITY PROJECTS</div>
+                        <div class="section-content">
+                            <div style="margin: 12px 0;">
+                                <div class="terminal-cyan">Terry Davis Foundation</div>
+                                <div class="terminal-gray info-content">Maintaining archives and legacy</div>
+                                <div class="terminal-amber info-content">URL: templeos.net/terry-davis-foundation/</div>
+                            </div>
+                            <div style="margin: 12px 0;">
+                                <div class="terminal-cyan">TempleOS Forks</div>
+                                <div class="terminal-gray info-content">Multiple community continuations</div>
+                            </div>
+                            <div style="margin: 12px 0;">
+                                <div class="terminal-cyan">Documentation Projects</div>
+                                <div class="terminal-gray info-content">Extensive online archives</div>
+                            </div>
+                            <div style="margin: 12px 0;">
+                                <div class="terminal-cyan">Public Domain Release</div>
+                                <div class="terminal-gray info-content">Freely available source code</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Technical Legacy -->
+                    <div class="terminal-border content-box">
+                        <div class="terminal-green content-title">TECHNICAL LEGACY</div>
+                        <div class="section-content info-content">
+                            <div class="stats-grid">
+                                <span>Lines of Code:</span>
+                                <span class="terminal-amber">120,000+</span>
+                            </div>
+                            <div class="stats-grid">
+                                <span>Development Years:</span>
+                                <span class="terminal-amber">24 Years</span>
+                            </div>
+                            <div class="stats-grid">
+                                <span>Language Created:</span>
+                                <span class="terminal-amber">HolyC</span>
+                            </div>
+                            <div class="stats-grid">
+                                <span>OS Names:</span>
+                                <span class="terminal-amber">4 Iterations</span>
+                            </div>
+                            <div class="stats-grid">
+                                <span>Architecture:</span>
+                                <span class="terminal-amber">64-bit x86</span>
+                            </div>
+                            <div class="stats-grid">
+                                <span>Graphics Mode:</span>
+                                <span class="terminal-amber">640x480 VGA</span>
+                            </div>
+                            <div class="stats-grid">
+                                <span>Color Depth:</span>
+                                <span class="terminal-amber">16 Colors</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Memorial Tribute -->
+                <div class="terminal-border memorial-tribute">
+                    <div class="terminal-green content-title">MEMORIAL TRIBUTE</div>
+                    <div class="tribute-name terminal-amber">Terrence Andrew Davis</div>
+                    <div class="tribute-dates terminal-cyan">December 15, 1969 - August 11, 2018</div>
+                    <div class="tribute-quote">
+                        "A brilliant engineer whose mental illness both inspired and complicated his singular achievement of creating an entire operating system single-handedly."
+                    </div>
+                    <div class="tribute-footer terminal-green">
+                        █ REST IN PEACE, GOD'S LONELY PROGRAMMER █
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <div class="terminal-border footer-content">
+                <div class="terminal-gray">
+                    MEMORIAL SYSTEM V1.0 | IN MEMORY OF TERRY A. DAVIS | TEMPLEOS FOREVER<br>
+                    PUBLIC DOMAIN | COMMUNITY MAINTAINED | GOD'S LONELY PROGRAMMER LIVES ON
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let vmRunning = false;
+        let uptimeInterval = null;
+        let startTime = null;
+
+        // Initialize the page
+        document.addEventListener('DOMContentLoaded', function() {
+            // Ensure biography section is shown by default
+            showSection('biography');
+        });
+
+        function showSection(sectionName) {
+            // Hide all sections
+            const sections = document.querySelectorAll('.section');
+            sections.forEach(section => section.classList.remove('active'));
+
+            // Show selected section
+            const activeSection = document.getElementById(sectionName);
+            if (activeSection) {
+                activeSection.classList.add('active');
+            }
+
+            // Update navigation buttons
+            const buttons = document.querySelectorAll('.nav-button');
+            buttons.forEach(button => {
+                button.classList.remove('active');
+                if (button.getAttribute('data-section') === sectionName) {
+                    button.classList.add('active');
+                }
+            });
+        }
+
+        function startVM() {
+            if (!vmRunning) {
+                vmRunning = true;
+                startTime = new Date();
+                
+                const screen = document.getElementById('vm-screen');
+                screen.innerHTML = `
+                    <div class="terminal-green">TempleOS V5.03 - God's Own Operating System</div>
+                    <div class="terminal-amber">=====================================</div>
+                    <div></div>
+                    <div class="terminal-cyan">System initialized successfully!</div>
+                    <div class="terminal-green">HolyC compiler ready</div>
+                    <div class="terminal-amber">Graphics subsystem: VGA 640x480 16-color</div>
+                    <div class="terminal-magenta">Memory: 512MB allocated</div>
+                    <div></div>
+                    <div class="terminal-green">Welcome to God's Temple</div>
+                    <div class="terminal-cyan">Type HELP for available commands</div>
+                    <div></div>
+                    <div class="terminal-amber">C:\\Home> <span class="animate-blink">_</span></div>
+                `;
+
+                // Start uptime counter
+                uptimeInterval = setInterval(updateUptime, 1000);
+                
+                // Update status
+                updateVMStatus('RUNNING');
+            }
+        }
+
+        function stopVM() {
+            if (vmRunning) {
+                vmRunning = false;
+                clearInterval(uptimeInterval);
+                
+                const screen = document.getElementById('vm-screen');
+                screen.innerHTML = `
+                    <div>TempleOS V5.03 Boot Loader</div>
+                    <div>=====================================</div>
+                    <div></div>
+                    <div>System halted.</div>
+                    <div class="terminal-amber">VM stopped by user</div>
+                    <div></div>
+                    <div class="terminal-gray">Ready to boot...</div>
+                    <div></div>
+                    <div class="terminal-green">C:\\Home> <span class="animate-blink">_</span></div>
+                `;
+                
+                document.getElementById('uptime').textContent = '00:00:00';
+                updateVMStatus('STOPPED');
+            }
+        }
+
+        function resetVM() {
+            stopVM();
+            setTimeout(() => {
+                startVM();
+            }, 1000);
+        }
+
+        function loadOS(osName) {
+            const screen = document.getElementById('vm-screen');
+            screen.innerHTML = `
+                <div class="terminal-green">Loading ${osName}...</div>
+                <div class="terminal-amber">=====================================</div>
+                <div></div>
+                <div>Initializing ${osName} environment...</div>
+                <div class="terminal-cyan">Boot sequence started</div>
+                <div class="terminal-green">System ready</div>
+                <div></div>
+                <div class="terminal-amber">${osName}> <span class="animate-blink">_</span></div>
+            `;
+        }
+
+        function updateUptime() {
+            if (startTime) {
+                const now = new Date();
+                const diff = Math.floor((now - startTime) / 1000);
+                const hours = Math.floor(diff / 3600).toString().padStart(2, '0');
+                const minutes = Math.floor((diff % 3600) / 60).toString().padStart(2, '0');
+                const seconds = (diff % 60).toString().padStart(2, '0');
+                document.getElementById('uptime').textContent = `${hours}:${minutes}:${seconds}`;
+            }
+        }
+
+        function updateVMStatus(status) {
+            // This could be expanded to update other UI elements based on VM status
+            console.log(`VM Status: ${status}`);
+        }
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', function(e) {
+            if (e.altKey) {
+                switch(e.key.toLowerCase()) {
+                    case 'b':
+                        showSection('biography');
+                        e.preventDefault();
+                        break;
+                    case 'v':
+                        showSection('vm');
+                        e.preventDefault();
+                        break;
+                    case 'l':
+                        showSection('legacy');
+                        e.preventDefault();
+                        break;
+                }
+            }
+        });
+    </script>
+</body>
+</html>
