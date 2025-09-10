@@ -1,7 +1,6 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
-import { setupAuth, isAuthenticated } from "./replitAuth";
 import multer from "multer";
 import path from "path";
 import fs from "fs";
@@ -13,23 +12,9 @@ const upload = multer({
 });
 
 export async function registerRoutes(app: Express): Promise<Server> {
-  // Auth middleware
-  await setupAuth(app);
-
-  // Auth routes
-  app.get('/api/auth/user', isAuthenticated, async (req: any, res) => {
-    try {
-      const userId = req.user.claims.sub;
-      const user = await storage.getUser(userId);
-      res.json(user);
-    } catch (error) {
-      console.error("Error fetching user:", error);
-      res.status(500).json({ message: "Failed to fetch user" });
-    }
-  });
-
-  // Get all VM sessions (protected)
-  app.get("/api/vm-sessions", isAuthenticated, async (req, res) => {
+  
+  // Get all VM sessions
+  app.get("/api/vm-sessions", async (req, res) => {
     try {
       const sessions = await storage.getAllVmSessions();
       res.json(sessions);
@@ -38,8 +23,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Create new VM session (protected)
-  app.post("/api/vm-sessions", isAuthenticated, async (req, res) => {
+  // Create new VM session
+  app.post("/api/vm-sessions", async (req, res) => {
     try {
       const validatedData = insertVmSessionSchema.parse(req.body);
       const session = await storage.createVmSession(validatedData);
@@ -49,8 +34,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Update VM session (protected)
-  app.patch("/api/vm-sessions/:id", isAuthenticated, async (req, res) => {
+  // Update VM session
+  app.patch("/api/vm-sessions/:id", async (req, res) => {
     try {
       const { id } = req.params;
       const updates = req.body;
@@ -66,8 +51,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Start VM session (protected)
-  app.post("/api/vm-sessions/:id/start", isAuthenticated, async (req, res) => {
+  // Start VM session
+  app.post("/api/vm-sessions/:id/start", async (req, res) => {
     try {
       const { id } = req.params;
       const session = await storage.updateVmSession(id, {
@@ -85,8 +70,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Stop VM session (protected)
-  app.post("/api/vm-sessions/:id/stop", isAuthenticated, async (req, res) => {
+  // Stop VM session
+  app.post("/api/vm-sessions/:id/stop", async (req, res) => {
     try {
       const { id } = req.params;
       const session = await storage.updateVmSession(id, {
@@ -103,8 +88,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Upload ISO file (protected)
-  app.post("/api/upload-iso", isAuthenticated, upload.single("iso"), async (req, res) => {
+  // Upload ISO file
+  app.post("/api/upload-iso", upload.single("iso"), async (req, res) => {
     try {
       if (!req.file) {
         return res.status(400).json({ message: "No file uploaded" });
@@ -126,8 +111,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Get all uploaded files (protected)
-  app.get("/api/uploaded-files", isAuthenticated, async (req, res) => {
+  // Get all uploaded files
+  app.get("/api/uploaded-files", async (req, res) => {
     try {
       const files = await storage.getAllUploadedFiles();
       res.json(files);
@@ -136,8 +121,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Delete uploaded file (protected)
-  app.delete("/api/uploaded-files/:id", isAuthenticated, async (req, res) => {
+  // Delete uploaded file
+  app.delete("/api/uploaded-files/:id", async (req, res) => {
     try {
       const { id } = req.params;
       const file = await storage.getUploadedFile(id);

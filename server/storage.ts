@@ -1,14 +1,9 @@
-import { type User, type UpsertUser, type VmSession, type InsertVmSession, type UploadedFile, type InsertUploadedFile, users, vmSessions, uploadedFiles } from "@shared/schema";
+import { type VmSession, type InsertVmSession, type UploadedFile, type InsertUploadedFile, vmSessions, uploadedFiles } from "@shared/schema";
 import { randomUUID } from "crypto";
 import { db } from "./db";
 import { eq } from "drizzle-orm";
 
 export interface IStorage {
-  // User operations
-  // (IMPORTANT) these user operations are mandatory for Replit Auth.
-  getUser(id: string): Promise<User | undefined>;
-  upsertUser(user: UpsertUser): Promise<User>;
-  
   getVmSession(id: string): Promise<VmSession | undefined>;
   getAllVmSessions(): Promise<VmSession[]>;
   createVmSession(session: InsertVmSession): Promise<VmSession>;
@@ -22,33 +17,12 @@ export interface IStorage {
 }
 
 export class MemStorage implements IStorage {
-  private users: Map<string, User>;
   private vmSessions: Map<string, VmSession>;
   private uploadedFiles: Map<string, UploadedFile>;
 
   constructor() {
-    this.users = new Map();
     this.vmSessions = new Map();
     this.uploadedFiles = new Map();
-  }
-
-  async getUser(id: string): Promise<User | undefined> {
-    return this.users.get(id);
-  }
-
-  async upsertUser(userData: UpsertUser): Promise<User> {
-    const id = userData.id || randomUUID();
-    const user: User = {
-      id,
-      email: userData.email ?? null,
-      firstName: userData.firstName ?? null,
-      lastName: userData.lastName ?? null,
-      profileImageUrl: userData.profileImageUrl ?? null,
-      createdAt: userData.createdAt ?? new Date(),
-      updatedAt: userData.updatedAt ?? new Date(),
-    };
-    this.users.set(id, user);
-    return user;
   }
 
   async getVmSession(id: string): Promise<VmSession | undefined> {
@@ -113,29 +87,6 @@ export class MemStorage implements IStorage {
 }
 
 export class DatabaseStorage implements IStorage {
-  // User operations
-  // (IMPORTANT) these user operations are mandatory for Replit Auth.
-
-  async getUser(id: string): Promise<User | undefined> {
-    const [user] = await db.select().from(users).where(eq(users.id, id));
-    return user;
-  }
-
-  async upsertUser(userData: UpsertUser): Promise<User> {
-    const [user] = await db
-      .insert(users)
-      .values(userData)
-      .onConflictDoUpdate({
-        target: users.id,
-        set: {
-          ...userData,
-          updatedAt: new Date(),
-        },
-      })
-      .returning();
-    return user;
-  }
-
   // VM Session operations
   async getVmSession(id: string): Promise<VmSession | undefined> {
     const [session] = await db.select().from(vmSessions).where(eq(vmSessions.id, id));
