@@ -329,6 +329,9 @@
                     <button class="nav-button" onclick="showSection('emulator')" data-section="emulator" data-testid="button-emulator">
                         [E]MULATOR
                     </button>
+                    <button class="nav-button" onclick="goToForum()" data-testid="button-forum">
+                        [F]ORUM
+                    </button>
                 </div>
             </div>
         </div>
@@ -1032,6 +1035,10 @@
             }
         }
 
+        function goToForum() {
+            window.location.href = '/forum';
+        }
+
         // Keyboard shortcuts
         document.addEventListener('keydown', function(e) {
             if (e.altKey) {
@@ -1050,6 +1057,10 @@
                         break;
                     case 'e':
                         showSection('emulator');
+                        e.preventDefault();
+                        break;
+                    case 'f':
+                        goToForum();
                         e.preventDefault();
                         break;
                 }
