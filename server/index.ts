@@ -1,11 +1,12 @@
 import express, { type Request, Response, NextFunction } from "express";
 import session from "express-session";
+import pgSimple from "connect-pg-simple";
 import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
 import { pool } from "./db";
 
-// Import connect-pg-simple to use PostgreSQL for session storage
-const pgSession = require('connect-pg-simple')(session);
+// Setup PostgreSQL session store
+const pgSession = pgSimple(session);
 
 const app = express();
 app.use(express.json());
