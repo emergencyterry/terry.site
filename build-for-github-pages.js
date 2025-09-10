@@ -21,6 +21,15 @@ try {
   execSync('cp -r dist/public/* ./', { stdio: 'inherit' });
   execSync('rm -rf dist/', { stdio: 'inherit' });
 
+  // Ensure scrolling text file is available for the site
+  console.log('📄 Copying scrolling text file...');
+  if (existsSync('scrolling-text.txt')) {
+    console.log('✓ Scrolling text file found and will be available');
+  } else {
+    console.log('⚠️ Creating default scrolling text file');
+    writeFileSync('scrolling-text.txt', 'PLACEHOLDER');
+  }
+
   // Fix absolute paths in index.html for GitHub Pages
   console.log('🔧 Fixing asset paths for GitHub Pages...');
   const { readFileSync, writeFileSync } = await import('fs');

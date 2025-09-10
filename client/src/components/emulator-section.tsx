@@ -77,6 +77,9 @@ export default function EmulatorSection() {
       {/* Header */}
       <div className="terminal-border bg-background p-6">
         <div className="terminal-green text-lg mb-4">RETROARCH EMULATION SYSTEM</div>
+        <div className="terminal-amber text-sm mb-4 p-3 border border-terminal-amber bg-terminal-amber/10">
+          ⚠️ ROMS can be found on https://vimm.net/ and https://archive.org . Other sources should be treated with caution!
+        </div>
         <div className="grid md:grid-cols-2 gap-6">
           <div>
             <div className="terminal-amber mb-2">TRIBUTE TO RETRO COMPUTING:</div>

@@ -5,6 +5,8 @@ import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { AuthProvider } from "@/lib/auth";
+import ScrollingText from "@/components/scrolling-text";
+import MusicPlayer from "@/components/music-player";
 import Home from "@/pages/home";
 import ForumPage from "@/pages/forum.tsx";
 import NotFound from "@/pages/not-found";
@@ -48,8 +50,14 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
         <TooltipProvider>
+          {/* Site-wide scrolling text */}
+          <ScrollingText />
+          
           <Toaster />
           <AppRouter />
+          
+          {/* Site-wide music player */}
+          <MusicPlayer />
         </TooltipProvider>
       </AuthProvider>
     </QueryClientProvider>

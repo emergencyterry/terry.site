@@ -219,4 +219,14 @@
     0%, 50% { opacity: 1; }
     51%, 100% { opacity: 0; }
   }
+
+  /* Scrolling text animation */
+  .scrolling-text-animation {
+    animation: scroll-text 15s linear infinite;
+  }
+
+  @keyframes scroll-text {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
 }
