@@ -34,9 +34,11 @@ try {
   const { readFileSync, writeFileSync } = await import('fs');
   let indexContent = readFileSync('dist/index.html', 'utf-8');
   
-  // Convert absolute paths to relative paths
-  indexContent = indexContent.replace(/src="\/assets\//g, 'src="./assets/');
-  indexContent = indexContent.replace(/href="\/assets\//g, 'href="./assets/');
+  // Convert absolute paths to GitHub Pages subpath
+  indexContent = indexContent.replace(/src="\/assets\//g, 'src="/terry.site/assets/');
+  indexContent = indexContent.replace(/href="\/assets\//g, 'href="/terry.site/assets/');
+  indexContent = indexContent.replace(/src="\.\/assets\//g, 'src="/terry.site/assets/');
+  indexContent = indexContent.replace(/href="\.\/assets\//g, 'href="/terry.site/assets/');
   
   writeFileSync('dist/index.html', indexContent);
 
