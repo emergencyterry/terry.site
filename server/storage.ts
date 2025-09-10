@@ -1,5 +1,7 @@
-import { type User, type UpsertUser, type VmSession, type InsertVmSession, type UploadedFile, type InsertUploadedFile } from "@shared/schema";
+import { type User, type UpsertUser, type VmSession, type InsertVmSession, type UploadedFile, type InsertUploadedFile, users, vmSessions, uploadedFiles } from "@shared/schema";
 import { randomUUID } from "crypto";
+import { db } from "./db";
+import { eq } from "drizzle-orm";
 
 export interface IStorage {
   // User operations
@@ -37,10 +39,13 @@ export class MemStorage implements IStorage {
   async upsertUser(userData: UpsertUser): Promise<User> {
     const id = userData.id || randomUUID();
     const user: User = {
-      ...userData,
       id,
-      createdAt: new Date(),
-      updatedAt: new Date(),
+      email: userData.email ?? null,
+      firstName: userData.firstName ?? null,
+      lastName: userData.lastName ?? null,
+      profileImageUrl: userData.profileImageUrl ?? null,
+      createdAt: userData.createdAt ?? new Date(),
+      updatedAt: userData.updatedAt ?? new Date(),
     };
     this.users.set(id, user);
     return user;
@@ -107,4 +112,90 @@ export class MemStorage implements IStorage {
   }
 }
 
-export const storage = new MemStorage();
+export class DatabaseStorage implements IStorage {
+  // User operations
+  // (IMPORTANT) these user operations are mandatory for Replit Auth.
+
+  async getUser(id: string): Promise<User | undefined> {
+    const [user] = await db.select().from(users).where(eq(users.id, id));
+    return user;
+  }
+
+  async upsertUser(userData: UpsertUser): Promise<User> {
+    const [user] = await db
+      .insert(users)
+      .values(userData)
+      .onConflictDoUpdate({
+        target: users.id,
+        set: {
+          ...userData,
+          updatedAt: new Date(),
+        },
+      })
+      .returning();
+    return user;
+  }
+
+  // VM Session operations
+  async getVmSession(id: string): Promise<VmSession | undefined> {
+    const [session] = await db.select().from(vmSessions).where(eq(vmSessions.id, id));
+    return session;
+  }
+
+  async getAllVmSessions(): Promise<VmSession[]> {
+    return await db.select().from(vmSessions);
+  }
+
+  async createVmSession(insertSession: InsertVmSession): Promise<VmSession> {
+    const [session] = await db
+      .insert(vmSessions)
+      .values({
+        ...insertSession,
+        status: "stopped",
+        memory: insertSession.memory ?? 512,
+        cpuCores: insertSession.cpuCores ?? 1,
+        isoFileName: insertSession.isoFileName ?? null,
+      })
+      .returning();
+    return session;
+  }
+
+  async updateVmSession(id: string, updates: Partial<VmSession>): Promise<VmSession | undefined> {
+    const [session] = await db
+      .update(vmSessions)
+      .set(updates)
+      .where(eq(vmSessions.id, id))
+      .returning();
+    return session;
+  }
+
+  async deleteVmSession(id: string): Promise<boolean> {
+    const result = await db.delete(vmSessions).where(eq(vmSessions.id, id));
+    return (result.rowCount ?? 0) > 0;
+  }
+
+  // Uploaded File operations
+  async getUploadedFile(id: string): Promise<UploadedFile | undefined> {
+    const [file] = await db.select().from(uploadedFiles).where(eq(uploadedFiles.id, id));
+    return file;
+  }
+
+  async getAllUploadedFiles(): Promise<UploadedFile[]> {
+    return await db.select().from(uploadedFiles);
+  }
+
+  async createUploadedFile(insertFile: InsertUploadedFile): Promise<UploadedFile> {
+    const [file] = await db
+      .insert(uploadedFiles)
+      .values(insertFile)
+      .returning();
+    return file;
+  }
+
+  async deleteUploadedFile(id: string): Promise<boolean> {
+    const result = await db.delete(uploadedFiles).where(eq(uploadedFiles.id, id));
+    return (result.rowCount ?? 0) > 0;
+  }
+}
+
+export const storage = new DatabaseStorage();
