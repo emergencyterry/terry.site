@@ -16,23 +16,15 @@ try {
   console.log('📦 Building React application...');
   execSync('vite build', { stdio: 'inherit' });
 
-  // Move the built files from dist/public to dist root for GitHub Pages
-  console.log('📁 Reorganizing files for GitHub Pages...');
-  execSync('cp -r dist/public/* dist/', { stdio: 'inherit' });
-  execSync('rm -rf dist/public', { stdio: 'inherit' });
-  
-  // Replace the root index.html with the React app's index.html
-  console.log('🔄 Replacing root index.html with React app...');
-  copyFileSync('dist/index.html', 'index.html');
-
-  // Copy the 404.html for GitHub Pages routing
-  console.log('🔄 Copying 404.html for GitHub Pages routing...');
-  copyFileSync('404.html', 'dist/404.html');
+  // Move the built files from dist/public to root for GitHub Pages
+  console.log('📁 Moving files to root for GitHub Pages...');
+  execSync('cp -r dist/public/* ./', { stdio: 'inherit' });
+  execSync('rm -rf dist/', { stdio: 'inherit' });
 
   // Fix absolute paths in index.html for GitHub Pages
   console.log('🔧 Fixing asset paths for GitHub Pages...');
   const { readFileSync, writeFileSync } = await import('fs');
-  let indexContent = readFileSync('dist/index.html', 'utf-8');
+  let indexContent = readFileSync('index.html', 'utf-8');
   
   // Convert absolute paths to GitHub Pages subpath
   indexContent = indexContent.replace(/src="\/assets\//g, 'src="/terry.site/assets/');
@@ -40,7 +32,7 @@ try {
   indexContent = indexContent.replace(/src="\.\/assets\//g, 'src="/terry.site/assets/');
   indexContent = indexContent.replace(/href="\.\/assets\//g, 'href="/terry.site/assets/');
   
-  writeFileSync('dist/index.html', indexContent);
+  writeFileSync('index.html', indexContent);
 
   console.log('✅ Build complete!');
   console.log('');
@@ -49,7 +41,7 @@ try {
   console.log('2. Push to the main branch');
   console.log('3. Go to your GitHub repository Settings > Pages');
   console.log('4. Set Source to "Deploy from a branch"');
-  console.log('5. Set Branch to "main" and folder to "/dist"');
+  console.log('5. Set Branch to "main" and folder to "/ (root)"');
   console.log('6. Save and wait for deployment');
   console.log('');
   console.log('🌟 Your site will be available at: https://[username].github.io/[repository-name]');
