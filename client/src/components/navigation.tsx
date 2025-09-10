@@ -61,7 +61,7 @@ export default function Navigation({ activeSection, onSectionChange }: Navigatio
           </Button>
           <Button
             onClick={() => {
-              window.location.href = '/forum';
+              window.location.href = '/terry.site/forum';
             }}
             variant="outline"
             className="px-3 py-1 text-xs border terminal-cyan border-terminal-cyan hover:terminal-green hover:border-terminal-green bg-transparent"

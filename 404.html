@@ -15,11 +15,11 @@
         var repoName = segments[0] || '';
         var routePath = segments.slice(1).join('/') || segments[0];
         
-        if (routePath === 'forum') {
-            // Redirect /forum to /#/forum
+        if (routePath === 'forum' || path === '/terry.site/forum') {
+            // Redirect /terry.site/forum to /#/forum
             var newUrl = location.protocol + '//' + location.hostname + 
                 (location.port ? ':' + location.port : '') + 
-                (repoName ? '/' + repoName : '') + '/#/forum';
+                '/terry.site/#/forum';
             location.replace(newUrl);
         } else if (routePath) {
             // Redirect any other path to hash routing
