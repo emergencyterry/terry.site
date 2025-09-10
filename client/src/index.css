@@ -1,0 +1,222 @@
+@import url('https://fonts.googleapis.com/css2?family=Courier+Prime:ital,wght@0,400;0,700;1,400;1,700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: hsl(0 0% 0%);
+  --foreground: hsl(0 0% 100%);
+  --card: hsl(0 0% 3%);
+  --card-foreground: hsl(0 0% 100%);
+  --popover: hsl(0 0% 0%);
+  --popover-foreground: hsl(0 0% 100%);
+  --primary: hsl(120 100% 50%);
+  --primary-foreground: hsl(0 0% 0%);
+  --secondary: hsl(45 100% 50%);
+  --secondary-foreground: hsl(0 0% 0%);
+  --muted: hsl(0 0% 15%);
+  --muted-foreground: hsl(0 0% 75%);
+  --accent: hsl(180 100% 50%);
+  --accent-foreground: hsl(0 0% 0%);
+  --destructive: hsl(0 100% 50%);
+  --destructive-foreground: hsl(0 0% 100%);
+  --border: hsl(120 100% 50%);
+  --input: hsl(0 0% 0%);
+  --ring: hsl(120 100% 50%);
+  --chart-1: hsl(120 100% 50%);
+  --chart-2: hsl(240 100% 50%);
+  --chart-3: hsl(45 100% 50%);
+  --chart-4: hsl(180 100% 50%);
+  --chart-5: hsl(300 100% 50%);
+  --sidebar: hsl(0 0% 3%);
+  --sidebar-foreground: hsl(0 0% 100%);
+  --sidebar-primary: hsl(120 100% 50%);
+  --sidebar-primary-foreground: hsl(0 0% 0%);
+  --sidebar-accent: hsl(180 100% 50%);
+  --sidebar-accent-foreground: hsl(0 0% 0%);
+  --sidebar-border: hsl(120 100% 50%);
+  --sidebar-ring: hsl(120 100% 50%);
+  --font-sans: "Courier Prime", "Courier New", Monaco, Consolas, monospace;
+  --font-serif: "Courier Prime", "Courier New", Monaco, Consolas, monospace;
+  --font-mono: "Courier Prime", "Courier New", Monaco, Consolas, monospace;
+  --radius: 0rem;
+  
+  /* Terminal Colors */
+  --terminal-green: hsl(120 100% 50%);
+  --terminal-amber: hsl(45 100% 50%);
+  --terminal-blue: hsl(240 100% 50%);
+  --terminal-cyan: hsl(180 100% 50%);
+  --terminal-magenta: hsl(300 100% 50%);
+  --terminal-gray: hsl(0 0% 75%);
+  --terminal-red: hsl(0 100% 50%);
+  --terminal-white: hsl(0 0% 100%);
+  --terminal-black: hsl(0 0% 0%);
+}
+
+.dark {
+  --background: hsl(0 0% 0%);
+  --foreground: hsl(0 0% 100%);
+  --card: hsl(0 0% 3%);
+  --card-foreground: hsl(0 0% 100%);
+  --popover: hsl(0 0% 0%);
+  --popover-foreground: hsl(0 0% 100%);
+  --primary: hsl(120 100% 50%);
+  --primary-foreground: hsl(0 0% 0%);
+  --secondary: hsl(45 100% 50%);
+  --secondary-foreground: hsl(0 0% 0%);
+  --muted: hsl(0 0% 15%);
+  --muted-foreground: hsl(0 0% 75%);
+  --accent: hsl(180 100% 50%);
+  --accent-foreground: hsl(0 0% 0%);
+  --destructive: hsl(0 100% 50%);
+  --destructive-foreground: hsl(0 0% 100%);
+  --border: hsl(120 100% 50%);
+  --input: hsl(0 0% 0%);
+  --ring: hsl(120 100% 50%);
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply font-mono antialiased bg-background text-foreground;
+    background: linear-gradient(transparent 50%, rgba(0, 255, 0, 0.03) 50%);
+    background-size: 100% 4px;
+  }
+}
+
+@layer utilities {
+  .terminal-border {
+    border: 2px solid var(--terminal-green);
+    box-shadow: 0 0 10px var(--terminal-green);
+  }
+  
+  .terminal-green {
+    color: var(--terminal-green);
+  }
+  
+  .terminal-amber {
+    color: var(--terminal-amber);
+  }
+  
+  .terminal-blue {
+    color: var(--terminal-blue);
+  }
+  
+  .terminal-cyan {
+    color: var(--terminal-cyan);
+  }
+  
+  .terminal-magenta {
+    color: var(--terminal-magenta);
+  }
+  
+  .terminal-gray {
+    color: var(--terminal-gray);
+  }
+  
+  .terminal-red {
+    color: var(--terminal-red);
+  }
+  
+  .terminal-white {
+    color: var(--terminal-white);
+  }
+  
+  .terminal-black {
+    color: var(--terminal-black);
+  }
+  
+  .bg-terminal-green {
+    background-color: var(--terminal-green);
+  }
+  
+  .bg-terminal-amber {
+    background-color: var(--terminal-amber);
+  }
+  
+  .bg-terminal-blue {
+    background-color: var(--terminal-blue);
+  }
+  
+  .bg-terminal-cyan {
+    background-color: var(--terminal-cyan);
+  }
+  
+  .bg-terminal-magenta {
+    background-color: var(--terminal-magenta);
+  }
+  
+  .bg-terminal-gray {
+    background-color: var(--terminal-gray);
+  }
+  
+  .bg-terminal-red {
+    background-color: var(--terminal-red);
+  }
+  
+  .bg-terminal-white {
+    background-color: var(--terminal-white);
+  }
+  
+  .bg-terminal-black {
+    background-color: var(--terminal-black);
+  }
+  
+  .border-terminal-green {
+    border-color: var(--terminal-green);
+  }
+  
+  .border-terminal-amber {
+    border-color: var(--terminal-amber);
+  }
+  
+  .border-terminal-blue {
+    border-color: var(--terminal-blue);
+  }
+  
+  .border-terminal-cyan {
+    border-color: var(--terminal-cyan);
+  }
+  
+  .border-terminal-magenta {
+    border-color: var(--terminal-magenta);
+  }
+  
+  .border-terminal-gray {
+    border-color: var(--terminal-gray);
+  }
+  
+  .hover\:bg-terminal-green:hover {
+    background-color: var(--terminal-green);
+  }
+  
+  .hover\:bg-terminal-cyan:hover {
+    background-color: var(--terminal-cyan);
+  }
+  
+  .hover\:text-terminal-green:hover {
+    color: var(--terminal-green);
+  }
+  
+  .hover\:text-terminal-black:hover {
+    color: var(--terminal-black);
+  }
+  
+  .ascii-art {
+    line-height: 1;
+    font-size: 8px;
+  }
+  
+  .animate-blink {
+    animation: blink 1s infinite;
+  }
+  
+  @keyframes blink {
+    0%, 50% { opacity: 1; }
+    51%, 100% { opacity: 0; }
+  }
+}
