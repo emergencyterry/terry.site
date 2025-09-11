@@ -1,17 +1,103 @@
 import { useState, useRef } from "react";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { useToast } from "@/hooks/use-toast";
 
 export default function EmulatorSection() {
   const [emulatorStatus, setEmulatorStatus] = useState("READY");
   const [currentCore, setCurrentCore] = useState("None Loaded");
   const [currentRom, setCurrentRom] = useState("No ROM");
+  const [selectedSystem, setSelectedSystem] = useState("");
+  const [uploadedRom, setUploadedRom] = useState<File | null>(null);
   const gameRef = useRef<HTMLDivElement>(null);
+  const { toast } = useToast();
 
-  const loadEmulator = async (core: string, romUrl: string) => {
+  // System configurations with their cores and supported file extensions
+  const systems = [
+    { 
+      id: 'nes', 
+      name: 'Nintendo Entertainment System', 
+      core: 'fceumm', 
+      extensions: ['.nes'],
+      presetGame: { name: 'RasterCat', url: 'https://github.com/dustmop/rastercat/releases/download/v1.0/rastercat.nes' }
+    },
+    { 
+      id: 'gameboy', 
+      name: 'Game Boy', 
+      core: 'gambatte', 
+      extensions: ['.gb', '.gbc'],
+      presetGame: { name: 'uCity', url: 'https://github.com/AntonioND/ucity/releases/download/v1.2/ucity.gb' }
+    },
+    { 
+      id: 'snes', 
+      name: 'Super Nintendo', 
+      core: 'snes9x', 
+      extensions: ['.sfc', '.smc'],
+      presetGame: { name: 'libSFX Template', url: 'https://github.com/Optiroc/libSFX/releases/download/v1.3.1/Template.sfc' }
+    },
+    { 
+      id: 'ps1', 
+      name: 'PlayStation 1', 
+      core: 'mednafen_psx_hw', 
+      extensions: ['.bin', '.cue', '.img', '.iso', '.pbp'],
+      presetGame: null
+    },
+    { 
+      id: 'gamecube', 
+      name: 'Nintendo GameCube', 
+      core: 'dolphin', 
+      extensions: ['.iso', '.gcm', '.gcz'],
+      presetGame: null
+    }
+  ];
+
+  const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    const selectedSystemConfig = systems.find(s => s.id === selectedSystem);
+    if (!selectedSystemConfig) {
+      toast({
+        title: 'System not selected',
+        description: 'Please select a system first',
+        variant: 'destructive',
+      });
+      return;
+    }
+
+    const fileExtension = '.' + file.name.split('.').pop()?.toLowerCase();
+    if (!selectedSystemConfig.extensions.includes(fileExtension)) {
+      toast({
+        title: 'Invalid file type',
+        description: `Supported formats for ${selectedSystemConfig.name}: ${selectedSystemConfig.extensions.join(', ')}`,
+        variant: 'destructive',
+      });
+      return;
+    }
+
+    setUploadedRom(file);
+    toast({
+      title: 'ROM file loaded',
+      description: `${file.name} ready to play`,
+    });
+  };
+
+  const loadEmulator = async (core: string, romSource: string | File) => {
     try {
       setEmulatorStatus("LOADING...");
       setCurrentCore(core.toUpperCase());
-      setCurrentRom(romUrl.split('/').pop() || "Unknown");
+
+      let romUrl: string;
+      if (typeof romSource === 'string') {
+        romUrl = romSource;
+        setCurrentRom(romSource.split('/').pop() || "Unknown");
+      } else {
+        // Create object URL for uploaded file
+        romUrl = URL.createObjectURL(romSource);
+        setCurrentRom(romSource.name);
+      }
 
       // Configure EmulatorJS
       (window as any).EJS_player = "#game";
@@ -44,6 +130,40 @@ export default function EmulatorSection() {
       console.error('Emulator loading error:', error);
       setEmulatorStatus("ERROR");
     }
+  };
+
+  const loadPresetGame = () => {
+    const systemConfig = systems.find(s => s.id === selectedSystem);
+    if (!systemConfig || !systemConfig.presetGame) {
+      toast({
+        title: 'No preset game available',
+        description: 'This system requires a ROM file upload',
+        variant: 'destructive',
+      });
+      return;
+    }
+    loadEmulator(systemConfig.core, systemConfig.presetGame.url);
+  };
+
+  const loadUploadedRom = () => {
+    if (!uploadedRom) {
+      toast({
+        title: 'No ROM file selected',
+        description: 'Please select a ROM file first',
+        variant: 'destructive',
+      });
+      return;
+    }
+    const systemConfig = systems.find(s => s.id === selectedSystem);
+    if (!systemConfig) {
+      toast({
+        title: 'System not selected',
+        description: 'Please select a system first',
+        variant: 'destructive',
+      });
+      return;
+    }
+    loadEmulator(systemConfig.core, uploadedRom);
   };
 
   const toggleFullscreen = () => {
@@ -100,49 +220,94 @@ export default function EmulatorSection() {
         </div>
       </div>
 
-      {/* Game Selection */}
+      {/* System Selection and ROM Upload */}
       <div className="terminal-border bg-background p-6">
-        <div className="terminal-green text-lg mb-4">CLASSIC GAME LIBRARY</div>
-        <div className="grid md:grid-cols-3 gap-4 text-xs">
-          <div className="border border-terminal-blue p-4">
-            <div className="terminal-cyan mb-2">NES HOMEBREW</div>
-            <div>8-bit computing era</div>
-            <div>Simple graphics, pure logic</div>
-            <div>Foundation of gaming</div>
-            <Button
-              onClick={() => loadEmulator('nes', 'https://github.com/dustmop/rastercat/releases/download/v1.0/rastercat.nes')}
-              className="mt-2 w-full bg-terminal-green text-background hover:bg-terminal-cyan text-xs p-2"
-              data-testid="button-load-nes"
-            >
-              LOAD NES
-            </Button>
+        <div className="terminal-green text-lg mb-4">SYSTEM SELECTION & ROM LOADING</div>
+        
+        <div className="grid md:grid-cols-2 gap-6">
+          {/* System Selection */}
+          <div className="space-y-4">
+            <div>
+              <Label htmlFor="system-select" className="terminal-amber mb-2 block">EMULATION SYSTEM:</Label>
+              <Select value={selectedSystem} onValueChange={setSelectedSystem}>
+                <SelectTrigger 
+                  className="bg-background border-terminal-blue text-terminal-green"
+                  data-testid="select-system"
+                >
+                  <SelectValue placeholder="Choose a gaming system..." />
+                </SelectTrigger>
+                <SelectContent className="bg-background border-terminal-blue">
+                  {systems.map((system) => (
+                    <SelectItem 
+                      key={system.id} 
+                      value={system.id}
+                      className="text-terminal-green hover:bg-terminal-blue/20"
+                    >
+                      {system.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            {selectedSystem && (
+              <div className="text-sm">
+                <div className="terminal-cyan mb-2">SYSTEM INFO:</div>
+                <div className="space-y-1 text-xs">
+                  <div>Core: <span className="terminal-amber">{systems.find(s => s.id === selectedSystem)?.core}</span></div>
+                  <div>Supported formats: <span className="terminal-gray">{systems.find(s => s.id === selectedSystem)?.extensions.join(', ')}</span></div>
+                  {systems.find(s => s.id === selectedSystem)?.presetGame && (
+                    <div>Preset game: <span className="terminal-green">{systems.find(s => s.id === selectedSystem)?.presetGame?.name}</span></div>
+                  )}
+                </div>
+              </div>
+            )}
           </div>
-          <div className="border border-terminal-blue p-4">
-            <div className="terminal-cyan mb-2">GAMEBOY DEMO</div>
-            <div>Portable computing</div>
-            <div>Monochrome elegance</div>
-            <div>Efficient architecture</div>
-            <Button
-              onClick={() => loadEmulator('gambatte', 'https://github.com/AntonioND/ucity/releases/download/v1.2/ucity.gb')}
-              className="mt-2 w-full bg-terminal-green text-background hover:bg-terminal-cyan text-xs p-2"
-              data-testid="button-load-gameboy"
-            >
-              LOAD GB
-            </Button>
+
+          {/* ROM Upload */}
+          <div className="space-y-4">
+            <div>
+              <Label htmlFor="rom-upload" className="terminal-amber mb-2 block">ROM FILE UPLOAD:</Label>
+              <Input
+                id="rom-upload"
+                type="file"
+                onChange={handleFileUpload}
+                className="bg-background border-terminal-blue text-terminal-green file:bg-terminal-blue file:text-background file:border-0 file:rounded-md file:px-3 file:py-1 file:mr-3"
+                data-testid="input-rom-upload"
+                accept={selectedSystem ? systems.find(s => s.id === selectedSystem)?.extensions.join(',') : '*'}
+              />
+            </div>
+
+            {uploadedRom && (
+              <div className="text-sm">
+                <div className="terminal-cyan mb-2">LOADED ROM:</div>
+                <div className="text-xs">
+                  <div>File: <span className="terminal-green">{uploadedRom.name}</span></div>
+                  <div>Size: <span className="terminal-gray">{(uploadedRom.size / 1024 / 1024).toFixed(2)} MB</span></div>
+                </div>
+              </div>
+            )}
           </div>
-          <div className="border border-terminal-blue p-4">
-            <div className="terminal-cyan mb-2">SNES DEMO</div>
-            <div>16-bit power</div>
-            <div>Enhanced graphics</div>
-            <div>Mode 7 scaling</div>
-            <Button
-              onClick={() => loadEmulator('snes9x', 'https://github.com/Optiroc/libSFX/releases/download/v1.3.1/Template.sfc')}
-              className="mt-2 w-full bg-terminal-green text-background hover:bg-terminal-cyan text-xs p-2"
-              data-testid="button-load-snes"
-            >
-              LOAD SNES
-            </Button>
-          </div>
+        </div>
+
+        {/* Load Buttons */}
+        <div className="grid md:grid-cols-2 gap-4 mt-6">
+          <Button
+            onClick={loadPresetGame}
+            disabled={!selectedSystem || !systems.find(s => s.id === selectedSystem)?.presetGame}
+            className="bg-terminal-blue text-background hover:bg-terminal-cyan disabled:opacity-50"
+            data-testid="button-load-preset"
+          >
+            📦 LOAD PRESET GAME
+          </Button>
+          <Button
+            onClick={loadUploadedRom}
+            disabled={!uploadedRom || !selectedSystem}
+            className="bg-terminal-green text-background hover:bg-terminal-cyan disabled:opacity-50"
+            data-testid="button-load-uploaded"
+          >
+            🎮 LOAD UPLOADED ROM
+          </Button>
         </div>
       </div>
 
