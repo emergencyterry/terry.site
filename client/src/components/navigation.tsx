@@ -1,8 +1,8 @@
 import { Button } from "@/components/ui/button";
 
 interface NavigationProps {
-  activeSection: 'biography' | 'vm' | 'legacy' | 'emulator';
-  onSectionChange: (section: 'biography' | 'vm' | 'legacy' | 'emulator') => void;
+  activeSection: 'biography' | 'vm' | 'legacy' | 'emulator' | 'browser';
+  onSectionChange: (section: 'biography' | 'vm' | 'legacy' | 'emulator' | 'browser') => void;
 }
 
 export default function Navigation({ activeSection, onSectionChange }: NavigationProps) {
@@ -60,8 +60,20 @@ export default function Navigation({ activeSection, onSectionChange }: Navigatio
             [E]MULATOR
           </Button>
           <Button
+            onClick={() => onSectionChange('browser')}
+            variant="outline"
+            className={`px-3 py-1 text-xs border ${
+              activeSection === 'browser'
+                ? 'terminal-green border-terminal-green'
+                : 'terminal-cyan border-terminal-cyan hover:terminal-green hover:border-terminal-green'
+            } bg-transparent`}
+            data-testid="button-browser"
+          >
+            [W]EB BROWSER
+          </Button>
+          <Button
             onClick={() => {
-              window.location.href = '/terry.site/forum';
+              window.location.hash = '/forum';
             }}
             variant="outline"
             className="px-3 py-1 text-xs border terminal-cyan border-terminal-cyan hover:terminal-green hover:border-terminal-green bg-transparent"

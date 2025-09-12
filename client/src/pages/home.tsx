@@ -4,11 +4,11 @@ import Navigation from "@/components/navigation";
 import BiographySection from "@/components/biography-section";
 import VmSection from "@/components/vm-section";
 import LegacySection from "@/components/legacy-section";
-
 import EmulatorSection from "@/components/emulator-section";
+import BrowserSection from "@/components/browser-section";
 
 export default function Home() {
-  const [activeSection, setActiveSection] = useState<'biography' | 'vm' | 'legacy' | 'emulator'>('biography');
+  const [activeSection, setActiveSection] = useState<'biography' | 'vm' | 'legacy' | 'emulator' | 'browser'>('biography');
 
   return (
     <div className="min-h-screen bg-background text-foreground font-mono">
@@ -20,6 +20,7 @@ export default function Home() {
         {activeSection === 'vm' && <VmSection />}
         {activeSection === 'legacy' && <LegacySection />}
         {activeSection === 'emulator' && <EmulatorSection />}
+        {activeSection === 'browser' && <BrowserSection />}
       </div>
 
       {/* Special Navigation */}
