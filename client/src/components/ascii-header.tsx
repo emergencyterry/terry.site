@@ -1,6 +1,31 @@
+import { useState, useEffect } from 'react';
+
 export default function AsciiHeader() {
+  const splashTexts = [
+    "GREEN PARTY HEADQUARTERS (THIS IS OUR YEAR!)",
+    "NICK FUENTES APPROVED!",
+    "CENSORSHIP-PROOF",
+    "EMBRACE W THOUGHT",
+    "HASANABI DEBATED!",
+    "WE ARE CHECKING...",
+    "YOU WILL EAT ZE BUGS!",
+    "ADRENOCHROME SO GOOD!",
+    "YOU WILL OWN NOTHING UND BE HAPPY!",
+    "GENEROUSLY DONATED BY THE GATES FOUNDATION"
+  ];
+
+  const [currentSplash, setCurrentSplash] = useState(0);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentSplash((prev) => (prev + 1) % splashTexts.length);
+    }, 3000); // Change every 3 seconds
+
+    return () => clearInterval(interval);
+  }, [splashTexts.length]);
+
   return (
-    <div className="text-center py-4 terminal-green ascii-art">
+    <div className="text-center py-4 terminal-green ascii-art relative">
       <pre className="text-[8px] leading-none">
 {`████████╗███████╗██████╗ ██████╗ ██╗   ██╗     █████╗     ██████╗  █████╗ ██╗   ██╗██╗███████╗
 ╚══██╔══╝██╔════╝██╔══██╗██╔══██╗╚██╗ ██╔╝    ██╔══██╗    ██╔══██╗██╔══██╗██║   ██║██║██╔════╝
@@ -9,6 +34,20 @@ export default function AsciiHeader() {
    ██║   ███████╗██║  ██║██║  ██║   ██║       ██║  ██║    ██████╔╝██║  ██║ ╚████╔╝ ██║███████║
    ╚═╝   ╚══════╝╚═╝  ╚═╝╚═╝  ╚═╝   ╚═╝       ╚═╝  ╚═╝    ╚═════╝ ╚═╝  ╚═╝  ╚═══╝  ╚═╝╚══════╝`}
       </pre>
+      
+      {/* Splash Text - Minecraft Style */}
+      <div 
+        className="absolute top-4 right-4 text-yellow-400 text-sm font-bold transform rotate-12 pointer-events-none select-none opacity-90"
+        style={{
+          textShadow: '2px 2px 0px rgba(0,0,0,0.8)',
+          fontFamily: 'monospace',
+          animation: 'pulse 2s infinite',
+        }}
+        data-testid="splash-text"
+      >
+        {splashTexts[currentSplash]}
+      </div>
+
       <div className="terminal-amber text-2xl mt-2 font-bold">
         terry.site
       </div>
