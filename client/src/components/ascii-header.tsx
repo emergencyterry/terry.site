@@ -17,9 +17,18 @@ export default function AsciiHeader() {
   // Pick a random splash text on component mount
   const [currentSplash] = useState(() => Math.floor(Math.random() * splashTexts.length));
 
+  const goToHome = () => {
+    window.location.hash = '/';
+  };
+
   return (
     <div className="text-center py-4 terminal-green ascii-art relative">
-      <pre className="text-[8px] leading-none">
+      <pre 
+        className="text-[8px] leading-none cursor-pointer hover:opacity-80 transition-opacity duration-200"
+        onClick={goToHome}
+        data-testid="ascii-logo"
+        title="Click to return home"
+      >
 {`████████╗███████╗██████╗ ██████╗ ██╗   ██╗     █████╗     ██████╗  █████╗ ██╗   ██╗██╗███████╗
 ╚══██╔══╝██╔════╝██╔══██╗██╔══██╗╚██╗ ██╔╝    ██╔══██╗    ██╔══██╗██╔══██╗██║   ██║██║██╔════╝
    ██║   █████╗  ██████╔╝██████╔╝ ╚████╔╝     ███████║    ██║  ██║███████║██║   ██║██║███████╗
