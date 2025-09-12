@@ -62,7 +62,7 @@ export default function AsciiHeader() {
         <img 
           src="https://media.tenor.com/f5O5S8f_lS0AAAAj/terry-davis-dancing.gif" 
           alt="Terry Davis Dancing" 
-          className="max-w-[200px] h-auto mx-auto border-2 border-terminal-green"
+          className="max-w-[400px] h-auto mx-auto border-2 border-terminal-green"
           style={{ boxShadow: '0 0 10px var(--terminal-green)' }}
           data-testid="terry-dancing-gif" 
         />
