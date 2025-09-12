@@ -14,6 +14,9 @@ export class VmEmulator {
   private currentLine: number = 0;
   private charIndex: number = 0;
   private lastUpdate: number = 0;
+  private commandLine: string = "";
+  private cursorPosition: number = 0;
+  private isBootCompleted: boolean = false;
 
   constructor(canvas: HTMLCanvasElement) {
     this.canvas = canvas;
@@ -23,6 +26,7 @@ export class VmEmulator {
     }
     this.ctx = ctx;
     this.setupCanvas();
+    this.setupKeyboardInput();
   }
 
   private setupCanvas() {
@@ -31,6 +35,48 @@ export class VmEmulator {
     this.ctx.fillStyle = '#00FF00';
     this.ctx.font = '12px "Courier New", monospace';
     this.ctx.textBaseline = 'top';
+    
+    // Make canvas focusable and set focus
+    this.canvas.tabIndex = 0;
+    this.canvas.style.outline = 'none';
+  }
+
+  private setupKeyboardInput() {
+    this.canvas.addEventListener('keydown', (e) => {
+      if (!this.isRunning || !this.isBootCompleted) return;
+      
+      e.preventDefault();
+      
+      switch (e.key) {
+        case 'Enter':
+          this.handleCommand();
+          break;
+        case 'Backspace':
+          if (this.commandLine.length > 0) {
+            this.commandLine = this.commandLine.slice(0, -1);
+          }
+          break;
+        default:
+          if (e.key.length === 1 && this.commandLine.length < 60) {
+            this.commandLine += e.key;
+          }
+          break;
+      }
+    });
+
+    // Focus canvas when clicked
+    this.canvas.addEventListener('click', () => {
+      this.canvas.focus();
+    });
+  }
+
+  private handleCommand() {
+    // Simple command handling
+    const cmd = this.commandLine.trim().toLowerCase();
+    this.commandLine = "";
+    
+    // Add command to display (simulate command execution)
+    // For now, just echo back the command
   }
 
   start() {
@@ -98,6 +144,7 @@ export class VmEmulator {
 
     // Once boot sequence is complete, show running system
     if (this.currentLine >= this.bootSequence.length) {
+      this.isBootCompleted = true;
       this.drawRunningSystem();
     }
   }
@@ -119,11 +166,18 @@ export class VmEmulator {
     this.ctx.fillText('Created by Terry A. Davis', 50, 80);
     this.ctx.fillText('HolyC Compiler Ready', 50, 110);
     this.ctx.fillText('640x480 VGA 16-Color Mode', 50, 140);
+    this.ctx.fillText('Type commands and press Enter', 50, 170);
+    
+    // Command line
+    const prompt = 'C:\\Home> ';
+    this.ctx.fillStyle = '#00FF00';
+    this.ctx.fillText(prompt + this.commandLine, 50, 200);
     
     // Blinking cursor
     if (Math.floor(Date.now() / 500) % 2 === 0) {
       this.ctx.fillStyle = '#FFFFFF';
-      this.ctx.fillText('█', 50, 180);
+      const cursorX = 50 + (prompt.length + this.commandLine.length) * 7;
+      this.ctx.fillText('█', cursorX, 200);
     }
   }
 }
