@@ -22,6 +22,19 @@ export default function Home() {
         {activeSection === 'emulator' && <EmulatorSection />}
       </div>
 
+      {/* Special Navigation */}
+      <div className="max-w-6xl mx-auto px-4 mt-8">
+        <div className="text-center">
+          <button
+            onClick={() => window.location.hash = '/the-fire-rises'}
+            className="bg-red-500 text-white px-6 py-3 text-lg font-bold hover:bg-red-600 transition-colors duration-200 shadow-lg"
+            data-testid="button-fire-rises"
+          >
+            THE FIRE RISES
+          </button>
+        </div>
+      </div>
+
       {/* Footer */}
       <div className="max-w-6xl mx-auto px-4 mt-8 pb-8">
         <div className="terminal-border bg-background p-4 text-center text-xs">
