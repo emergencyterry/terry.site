@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 
 export default function AsciiHeader() {
   const splashTexts = [
@@ -14,15 +14,8 @@ export default function AsciiHeader() {
     "GENEROUSLY DONATED BY THE GATES FOUNDATION"
   ];
 
-  const [currentSplash, setCurrentSplash] = useState(0);
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentSplash((prev) => (prev + 1) % splashTexts.length);
-    }, 3000); // Change every 3 seconds
-
-    return () => clearInterval(interval);
-  }, [splashTexts.length]);
+  // Pick a random splash text on component mount
+  const [currentSplash] = useState(() => Math.floor(Math.random() * splashTexts.length));
 
   return (
     <div className="text-center py-4 terminal-green ascii-art relative">
