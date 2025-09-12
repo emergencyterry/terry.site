@@ -9,6 +9,7 @@ import ScrollingText from "@/components/scrolling-text";
 import MusicPlayer from "@/components/music-player";
 import Home from "@/pages/home";
 import ForumPage from "@/pages/forum.tsx";
+import TheFireRisesPage from "@/pages/the-fire-rises";
 import NotFound from "@/pages/not-found";
 
 // Hash routing function for GitHub Pages compatibility
@@ -39,6 +40,7 @@ function AppRouter() {
       <Switch>
         <Route path="/" component={Home} />
         <Route path="/forum" component={ForumPage} />
+        <Route path="/the-fire-rises" component={TheFireRisesPage} />
         <Route component={NotFound} />
       </Switch>
     </Router>
